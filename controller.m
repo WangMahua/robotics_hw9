@@ -15,16 +15,15 @@ Omega = reshape(u(22:24),3,1);
 t     = u(end);
 
 
-R_d = eye(3);
+R_d = [1,0,0;0,1,0;0,0,1];
 Omega_d = [0; 0.1; 1];
 J = diag([P.Jxx; P.Jyy; P.Jzz]);
-
-e_R = vee((R_d)'*R - (R)*R_d)*0.5;
-e_omega = Omega - R'*R_d*Omega_d;
+eR = 0.5*vee((R_d)'*R - (R)'*R_d);
+eOmega = Omega - R'*R_d*Omega_d;
 e_3= [0; 0; 1];
 
 f = (P.kx*( x(3)-xd(3))+P.kx*v(3) + P.mass*P.gravity )/(dot(e_3,R*e_3));
-M = e_R*(-P.kR) + e_omega*(-P.kOmega) + cross(Omega,J*Omega);
+M = eR*(-P.kR) + eOmega*(-P.kOmega) + cross(Omega,J*Omega);
 
-out = [f;M;e_R];
+out = [f;M;eR];
 end
